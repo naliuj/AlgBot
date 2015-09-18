@@ -25,9 +25,11 @@ def getAlgs(text):
 
 def writeReply(commentBody,comment):
     for alg in getAlgs(commentBody):
-        replyBody ='''Alg: `%s`
+        replyBody =('''Alg: `%s`
 
-[alg.cubing.net Link](https://alg.cubing.net/?alg=%s)''' % (alg, alg)
+[alg.cubing.net Link](https://alg.cubing.net/?alg=%s)
+
+^^I ^^am ^^a ^^bot. ^^Please ^^Message ^^the ^^moderators ^^of ^^/r/Cubers ^^if ^^there ^^are ^^any ^^issues.''') % (alg, alg)
         comment.reply(replyBody)
 
 # we want to keep scanning
