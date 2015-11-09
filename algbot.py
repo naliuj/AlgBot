@@ -1,11 +1,14 @@
 import praw
 import time
+import re
 
 r = praw.Reddit(user_agent= 'alg.cubing.net linker for /r/cubers')
 r.login('AlgBot', )
 
 commentCache = [] # add id's to replied comments here
 blacklist = ['algbot','rubiksbot']
+
+regex = re.compile(r"[RLFBUDrlfbudxyz][2']?");
 
 def run_bot():
     subreddit = r.get_subreddit('naliuj')
@@ -20,11 +23,14 @@ def run_bot():
 def getAlgs(text):
     while text.find('[') != -1 and text.find(']') != -1: 	# determines that there exists and alg
         alg = text[text.find('[')+1:text.find(']')] 		# gets that alg
-        text = text.replace('[' + alg + ']', '') 			# removes that piece of text to find next alg
-        yield alg 											# yields that alg and continues to search for more algs
+        text = text.replace('[' + alg + ']', '') 		# removes that piece of text to find next alg
+        if regex.match(alg):
+            print(alg)
+            yield alg 						# yields that alg and continues to search for more algs
 
 def writeReply(commentBody,comment):
     for alg in getAlgs(commentBody):
+        print(alg)
         replyBody =('''Alg: `%s`
 
 [alg.cubing.net Link](https://alg.cubing.net/?alg=%s)
