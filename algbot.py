@@ -20,9 +20,9 @@ def run_bot():
 
 # parses a body of text and returns algs
 def getAlgs(text):
-    while text.find('`') != -1 and text.find('`') != -1: 	# determines that there exists and alg
-        alg = text[text.find('`')+1:text.find('`')] 		# gets that alg
-        text = text.replace('`' + alg + '`', '') 		# removes that piece of text to find next alg
+    while text.find('<') != -1 and text.find('>') != -1: 	# determines that there exists and alg
+        alg = text[text.find('<')+1:text.find('>')] 		# gets that alg
+        text = text.replace('<' + alg + '>', '') 		# removes that piece of text to find next alg
         if regex.match(alg):
             yield alg 						# yields that alg and continues to search for more algs
 
