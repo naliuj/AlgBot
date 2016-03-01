@@ -1,9 +1,7 @@
 import praw
 import time
 import re
-
-r = praw.Reddit(user_agent= 'alg.cubing.net linker for /r/cubers')
-r.login('AlgBot', )
+import algbotOAuth
 
 commentCache = [] # add id's to replied comments here
 blacklist = ['algbot','rubiksbot']
@@ -34,9 +32,10 @@ def writeReply(commentBody,comment):
 
 [alg.cubing.net Link](https://alg.cubing.net/?alg=%s)\n\n''') % (alg, alg)
 
-        replyBody += '^^I ^^am ^^a ^^bot. ^^Please ^^Message ^^the ^^moderators ^^of ^^/r/Cubers ^^if ^^there ^^are ^^any ^^issues.'
+        replyBody += '^^(I am a bot. Please Message the moderators of /r/Cubers if there are any issues.)'
         comment.reply(replyBody)
 
+r = algbotOAuth.login()
 # we want to keep scanning
 while True:
     try:
