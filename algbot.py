@@ -8,7 +8,7 @@ r.login('AlgBot', )
 commentCache = [] # add id's to replied comments here
 blacklist = ['algbot','rubiksbot']
 
-regex = re.compile(r"[RLFBUDrlfbudxyz][2']?");
+regex = re.compile(r"`3x3: *(([RLFBUDrlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
 
 def run_bot():
     subreddit = r.get_subreddit('naliuj')
@@ -20,10 +20,9 @@ def run_bot():
 
 # parses a body of text and returns algs
 def getAlgs(text):
-    while text.find('<') != -1 and text.find('>') != -1: 	# determines that there exists and alg
-        alg = text[text.find('<')+1:text.find('>')] 		# gets that alg
-        text = text.replace('<' + alg + '>', '') 		# removes that piece of text to find next alg
-        if regex.match(alg):
+        if re.match(text, regex):
+            m = re.match(text, regex)
+            alg = m.group(1)
             yield alg 						# yields that alg and continues to search for more algs
 
 def writeReply(commentBody,comment):
