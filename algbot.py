@@ -6,7 +6,7 @@ import algbotOAuth
 commentCache = [] # add id's to replied comments here
 blacklist = ['algbot','rubiksbot']
 
-regex = re.compile(r"`(([RLFBUDrlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
+regex = re.compile(r"`(3x3): *(([RLFBUDrlfbudxyz]|[RLFBUD]w|[ 2'i])+)`?")
 
 def run_bot():
     subreddit = r.get_subreddit('naliuj')
@@ -19,9 +19,10 @@ def run_bot():
 # parses a body of text and returns algs
 def getAlgs(text):
     if re.match(regex, text):
+        print('match found')
         m = re.match(regex, text)
-        alg = m.group(0)
-        yield alg 						# yields that alg and continues to search for more algs
+        alg = m.group(2)
+        yield alg 					# yields that alg and continues to search for more algs
 
 def writeReply(commentBody,comment):
     algs = [alg for alg in getAlgs(commentBody)]
