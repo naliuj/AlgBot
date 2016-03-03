@@ -3,17 +3,17 @@ import time
 import re
 import algbot_oauth
 
-blacklist = ['algbot','rubiksbot']
-
 regex = re.compile(r"`(3x3): *(([RLFBUDrlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
+r = algbot_oauth.login()
 
 def run_bot():
     subreddit = r.get_subreddit('naliuj')
     comments = subreddit.get_comments(limit=25)
     for comment in comments:
-        if comment.author.name.lower() not in blacklist and searchID(comment.id) == False:
+        with open('comment_ids.txt','r') as file:
+            cachedComments = file.readlines()
+        if comment.id+'\n' in cachedComments:
             writeReply(comment.body, comment)
-            saveID(comment.id)
 
 # parses a body of text and returns algs
 def getAlgs(text):
@@ -28,30 +28,14 @@ def writeReply(commentBody,comment):
         replyBody = '';
         for alg in algs:
             replyBody += ('''alg.cubing.net link:
-
 [`%s`](https://alg.cubing.net/?alg=%s)
-
 
 ^^I ^^am ^^a ^^bot. ^^Please ^^Message ^^the ^^moderators ^^of ^^/r/Cubers ^^if ^^there ^^are ^^any ^^issues.''') % (alg, alg)
         comment.reply(replyBody)
+        with open('comment_ids.txt','w') as file:
+            file.write(comment.id+'\n')
+        print('replied to: '+comment.id)
 
-def saveID(commentID):
-    file = open('comment_ids.txt','w')
-    file.write(commentID)
-    file.write('\n')
-    file.close()
-
-def searchID(commentID):
-    file = open('comment_ids.txt','r')
-    rg = re.compile(commentID)
-    if re.match(rg, file.read()):
-        file.close()
-        return True
-    else:
-        file.close()
-        return False
-
-r = algbot_oauth.login()
 # we want to keep scanning
 while True:
     try:
