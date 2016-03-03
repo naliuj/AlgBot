@@ -1,12 +1,12 @@
 import praw
 import time
 import re
-import algbotOAuth
+import algbot_oauth
 
 commentCache = [] # add id's to replied comments here
 blacklist = ['algbot','rubiksbot']
 
-regex = re.compile(r"`(([RLFBUDrlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
+regex = re.compile(r"`(3x3): *(([RLFBUDrlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
 
 def run_bot():
     subreddit = r.get_subreddit('naliuj')
@@ -20,7 +20,7 @@ def run_bot():
 def getAlgs(text):
     if re.match(regex, text):
         m = re.match(regex, text)
-        alg = m.group(0)
+        alg = m.group(2)
         yield alg 						# yields that alg and continues to search for more algs
 
 def writeReply(commentBody,comment):
@@ -28,18 +28,21 @@ def writeReply(commentBody,comment):
     if len(algs) > 0:
         replyBody = '';
         for alg in algs:
-            replyBody += ('''Alg: `%s`
+            replyBody += ('''alg.cubing.net link:
 
-[alg.cubing.net Link](https://alg.cubing.net/?alg=%s)\n\n''') % (alg, alg)
+[`%s`](https://alg.cubing.net/?alg=%s)
 
-        replyBody += '^^I ^^am ^^a ^^bot. ^^Please ^^Message ^^the ^^moderators ^^of ^^/r/Cubers ^^if ^^there ^^are ^^any ^^issues.)'
+
+^^I ^^am ^^a ^^bot. ^^Please ^^Message ^^the ^^moderators ^^of ^^/r/Cubers ^^if ^^there ^^are ^^any ^^issues.''') % (alg, alg)
         comment.reply(replyBody)
+        print('replied')
 
-r = algbotOAuth.login()
+r = algbot_oauth.login()
 # we want to keep scanning
 while True:
     try:
         run_bot()
+        print('finished run')
         time.sleep(10)
     except KeyboardInterrupt:
         raise
