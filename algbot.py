@@ -3,7 +3,7 @@ import time
 import re
 import algbot_oauth
 
-regex = re.compile(r"`(3x3): *(([RLFBUDMSErlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
+regex = re.compile(r"`(2x2|3x3|4x4): *(([RLFBUDMSErlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
 r = algbot_oauth.login()
 
 def run_bot():
@@ -22,15 +22,24 @@ def getAlgs(text):
         alg = m.group(2)
         yield alg 						# yields that alg and continues to search for more algs
 
+def getSize(text):
+    m = re.match(regex, text)
+    return {
+        '2x2':'&puzzle=2x2x2',
+        '3x3':'&puzzle=3x3x3',
+        '4x4':'&puzzle=4x4x4'
+        }[m.group(1)]
+
 def writeReply(commentBody,comment):
     algs = [alg for alg in getAlgs(commentBody)]
     if len(algs) > 0:
         replyBody = '';
+        size = getSize(commentBody)
         for alg in algs:
             replyBody += ('''alg.cubing.net link:
-[`%s`](https://alg.cubing.net/?alg=%s)
+[`%s`](https://alg.cubing.net/?alg=%s%s)
 
-^^I ^^am ^^a ^^bot. ^^Please ^^Message ^^the ^^moderators ^^of ^^/r/Cubers ^^if ^^there ^^are ^^any ^^issues.''') % (alg, alg)
+^^I ^^am ^^a ^^bot. ^^Please ^^Message ^^the ^^moderators ^^of ^^/r/Cubers ^^if ^^there ^^are ^^any ^^issues.''') % (alg, alg, size)
         comment.reply(replyBody)
         with open('comment_ids.txt','a') as f:
             f.write(comment.id)
