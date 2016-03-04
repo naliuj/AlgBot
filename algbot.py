@@ -3,16 +3,16 @@ import time
 import re
 import algbot_oauth
 
-regex = re.compile(r"`(3x3): *(([RLFBUDrlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
+regex = re.compile(r"`(3x3): *(([RLFBUDMSErlfbudxyz]|[RLFBUD]w|[ 2'])+)`?")
 r = algbot_oauth.login()
 
 def run_bot():
     subreddit = r.get_subreddit('naliuj')
     comments = subreddit.get_comments(limit=25)
+    with open('comment_ids.txt','r') as f:
+        seen_comments = f.read().splitlines()
     for comment in comments:
-        with open('comment_ids.txt','r') as file:
-            cachedComments = file.readlines()
-        if comment.id+'\n' in cachedComments:
+        if comment.id not in seen_comments:
             writeReply(comment.body, comment)
 
 # parses a body of text and returns algs
@@ -32,14 +32,16 @@ def writeReply(commentBody,comment):
 
 ^^I ^^am ^^a ^^bot. ^^Please ^^Message ^^the ^^moderators ^^of ^^/r/Cubers ^^if ^^there ^^are ^^any ^^issues.''') % (alg, alg)
         comment.reply(replyBody)
-        with open('comment_ids.txt','w') as file:
-            file.write(comment.id+'\n')
+        with open('comment_ids.txt','a') as f:
+            f.write(comment.id)
+            f.write('\n')
         print('replied to: '+comment.id)
 
 # we want to keep scanning
 while True:
     try:
         run_bot()
+        print('run finished')
         time.sleep(10)
     except KeyboardInterrupt:
         raise
